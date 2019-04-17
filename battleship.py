@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+from random import random, choice
 
 # Class of ship  Size
 # -------------  ----
@@ -23,6 +24,10 @@ class Ship(object):
     @property
     def name(self):
         return self._name
+
+    @property
+    def size(self):
+        return self._size
 
     @property
     def coords(self):
@@ -61,6 +66,18 @@ class Game(object):
             Ship('Cruiser', 3, ('B2', 'B3', 'B4')),
             Ship('Destroyer', 2, ('H6', 'I6')),
         )
+
+    def randomly_place_ship(self, ship):
+        horizontal = random() < 0.5
+
+        if horizontal:
+            row = choice(self._rows)
+            start_col = choice(self._columns[:-ship.size])
+            end_col = self._columns[start_col:start_col + ship.size]
+        else:
+            col = choice(self._columns)
+            start_row = choice(self._rows[:-ship.size])
+            end_row = self._rows[start_row:start_row + ship.size]
 
     def choose_move(self):
         move = None
