@@ -42,8 +42,8 @@ class Ship(object):
         return '<Ship name={0}>'.format(self._name)
 
 
-class Grid(object):
-    def __init__(self, rows, cols):
+class Game(object):
+    def __init__(self, rows=9, cols=9):
         self._size = (rows, cols)
         self._columns = [chr(num + 96).upper() for num in range(1, cols + 1)]
         self._rows = [str(num) for num in range(1, rows + 1)]
@@ -130,7 +130,6 @@ class Grid(object):
         [print(line) for line in lines]
 
     def print_status(self):
-        self.game_ended
         if self._moves:
             last_move = self._moves[-1]
             ship = self.ship_at_coord(last_move)
@@ -150,19 +149,19 @@ class Grid(object):
         return len(self._moves)
 
     @property
-    def game_ended(self):
+    def ended(self):
         return all([ship.has_sunk for ship in self._ships])
 
 
 if __name__ == "__main__":
-    grid = Grid(9, 9)
-    while not grid.game_ended:
-        grid.print_grid()
-        grid.print_status()
-        grid.choose_move()
+    game = Game(9, 9)
+    while not game.ended:
+        game.print_grid()
+        game.print_status()
+        game.choose_move()
 
-    grid.print_grid()
-    grid.print_status()
+    game.print_grid()
+    game.print_status()
     print("Congratulations! You sank all the ships in {turns} turns.".format(
-        turns=grid.turns,
+        turns=game.turns,
     ))
