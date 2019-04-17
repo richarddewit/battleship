@@ -1,0 +1,38 @@
+# https://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+# Docstrings and comments use max_line_length = 79
+[*.py]
+indent_size = 4
+max_line_length = 119
+
+# The JSON files contain newlines inconsistently
+[*.json]
+insert_final_newline = ignore
+
+# Minified JavaScript files shouldn't be changed
+[**.min.{js,css}]
+indent_style = ignore
+insert_final_newline = ignore
+
+# Markdown converts 2 trailing spaces to <br>
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefiles always use tabs for indentation
+[Dockerfile]
+indent_size = 4
+indent_style = tab
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
