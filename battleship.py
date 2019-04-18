@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-from random import random, choice
+from random import choice, randint, random
 
 # Class of ship  Size
 # -------------  ----
@@ -60,24 +60,44 @@ class Game(object):
             for row in self._rows
         ]
 
-        # TODO: Place all 5 ships randomly
         self._ships = (
-            Ship('Carrier', 5, ('F4', 'F5', 'F6', 'F7', 'F8')),
-            Ship('Cruiser', 3, ('B2', 'B3', 'B4')),
-            Ship('Destroyer', 2, ('H6', 'I6')),
+            Ship('Carrier', 5),
+            Ship('Battleship', 4),
+            Ship('Cruiser', 3),
+            Ship('Submarine', 3),
+            Ship('Destroyer', 2),
         )
+
+        for ship in self._ships:
+            self.randomly_place_ship(ship)
 
     def randomly_place_ship(self, ship):
         horizontal = random() < 0.5
 
         if horizontal:
-            row = choice(self._rows)
-            start_col = choice(self._columns[:-ship.size])
-            end_col = self._columns[start_col:start_col + ship.size]
+            row = str(choice(self._rows))
+            start_col = randint(0, len(self._columns) - ship.size)
+            end_col = start_col + ship.size
+            coords = [
+                self._columns[col] + row
+                for col in range(start_col, end_col)
+            ]
         else:
             col = choice(self._columns)
-            start_row = choice(self._rows[:-ship.size])
-            end_row = self._rows[start_row:start_row + ship.size]
+            start_row = randint(0, len(self._rows) - ship.size)
+            end_row = start_row + ship.size
+            coords = [
+                col + str(self._rows[row])
+                for row in range(start_row, end_row)
+            ]
+
+        coords_taken = self.coords_taken
+        for coord in coords:
+            if coord in coords_taken:
+                self.randomly_place_ship(ship)
+                return
+
+        ship.set_coords(coords)
 
     def choose_move(self):
         move = None
@@ -87,7 +107,9 @@ class Game(object):
                 exit(0)
 
             if i not in self._available_options:
-                print('Invalid move. A move consists of a letter and a number, like B2, with a minimum of {first} and a maximum of {last}.'.format(
+                print(('Invalid move. A move consists of a letter and a '
+                       'number, like B2, with a minimum of {first} and a '
+                       'maximum of {last}.').format(
                     first=self._available_options[0],
                     last=self._available_options[-1],
                 ))
@@ -160,6 +182,14 @@ class Game(object):
             print('Last move: ' + last_move)
         else:
             print()
+
+    @property
+    def coords_taken(self):
+        coords = []
+        for ship in self._ships:
+            for coord in ship.coords:
+                coords.append(coord)
+        return coords
 
     @property
     def turns(self):
