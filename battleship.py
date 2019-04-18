@@ -99,25 +99,30 @@ class Game(object):
 
         ship.set_coords(coords)
 
+    def check_valid_move(self, move):
+        if move in ('QUIT', 'EXIT'):
+            exit(0)
+
+        if move not in self._available_options:
+            print(('Invalid move. A move consists of a letter and a '
+                   'number, like B2, with a minimum of {first} and a '
+                   'maximum of {last}.').format(
+                first=self._available_options[0],
+                last=self._available_options[-1],
+            ))
+        elif move in self._moves:
+            print('Move {move} was already made. Pick another.'.format(
+                move=move,
+            ))
+        else:
+            return True
+        return False
+
     def choose_move(self):
         move = None
         while move is None:
             i = input('Choose your next move: ').upper()
-            if i in ('QUIT', 'EXIT'):
-                exit(0)
-
-            if i not in self._available_options:
-                print(('Invalid move. A move consists of a letter and a '
-                       'number, like B2, with a minimum of {first} and a '
-                       'maximum of {last}.').format(
-                    first=self._available_options[0],
-                    last=self._available_options[-1],
-                ))
-            elif i in self._moves:
-                print('Move {move} was already made. Pick another.'.format(
-                    move=i,
-                ))
-            else:
+            if self.check_valid_move(i):
                 move = i
 
         if move:
